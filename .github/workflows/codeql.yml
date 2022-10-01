@@ -1,0 +1,1312 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "id": "MXXTuy_o0sjk"
+   },
+   "outputs": [],
+   "source": [
+    "!pip install -q -U kaggle_environments"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "id": "MXXTuy_o0sjk"
+   },
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import random\n",
+    "\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "\n",
+    "from kaggle_environments import make, evaluate"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "0kuo6IOxiRub"
+   },
+   "source": [
+    "### 1. Агент, всегда играющего \"камень\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "colab": {
+     "base_uri": "https://localhost:8080/"
+    },
+    "id": "bqTqV7B92rJ6",
+    "outputId": "3764230a-2884-41da-92c0-a1265bc7254c"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting rock_agent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile rock_agent.py\n",
+    "\n",
+    "#0 - rock\n",
+    "#1 - paper\n",
+    "#2 - scissors\n",
+    "def rock_agent(observation, configuration):\n",
+    "    return 0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[-98.0, 98.0]]"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"rock_agent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "CZDUmTITyV8G"
+   },
+   "source": [
+    "### 2. Агент, всегда играющий \"бумагу\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "colab": {
+     "base_uri": "https://localhost:8080/"
+    },
+    "id": "eoMyw2lEyU82",
+    "outputId": "6d5ca399-1e57-4e0a-fdd7-d58aa68ee40f"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting paper_agent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile paper_agent.py\n",
+    "\n",
+    "def paper_agent(observation, configuration):\n",
+    "    return 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[-97.0, 97.0]]"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"paper_agent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100} #number of episodes \n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "gYcq1iInyl6M"
+   },
+   "source": [
+    "### 3. Агент, всегда играющий \"ножницы\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "colab": {
+     "base_uri": "https://localhost:8080/"
+    },
+    "id": "07C09HaWypWl",
+    "outputId": "ab59124c-3dd6-4a09-bb8b-c1d8271236be"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting scissors_agent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile scissors_agent.py\n",
+    "\n",
+    "def scissors_agent(observation, configuration):\n",
+    "    return 2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[-99.0, 99.0]]"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"scissors_agent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "F_veTp0q0EB8"
+   },
+   "source": [
+    "### 4. Агент всегда играет рандомное значение"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "colab": {
+     "base_uri": "https://localhost:8080/"
+    },
+    "id": "T67y0KG_0Hoo",
+    "outputId": "e3228cc1-342e-42fa-f70a-6cf1a7031ddb"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting random_opponent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile random_opponent.py\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "def random_opponent(observation, configuration):\n",
+    "    return random.randrange(0, configuration.signs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[0, 0]]"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"random_opponent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "et1J5hUGigeh"
+   },
+   "source": [
+    "### 5. Агент производит то же действие, что и оппонент на прошлом ходу"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "colab": {
+     "base_uri": "https://localhost:8080/"
+    },
+    "id": "7l6Ttw6qi0jk",
+    "outputId": "a0199f43-b4c7-478c-9ec3-3541f195b0b3"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting copy_opponent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile copy_opponent.py\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "def copy_opponent(observation, configuration):\n",
+    "    if observation.step > 0:\n",
+    "        return observation.lastOpponentAction\n",
+    "    else:\n",
+    "        return random.randrange(0, configuration.signs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[-20.0, 20.0]]"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"copy_opponent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "7sz2Oe2ry7yx"
+   },
+   "source": [
+    "### 6. Агент производит действие+1 к тому, что использовал оппонент на прошлом ходу"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {
+    "colab": {
+     "base_uri": "https://localhost:8080/"
+    },
+    "id": "VXkrB6bbzZbT",
+    "outputId": "f9cf69eb-2931-4f2f-9547-cf0be73c01e2"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting copynext_opponent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile copynext_opponent.py\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "def copynext_opponent(observation, configuration):\n",
+    "    if observation.step > 0:\n",
+    "        return (observation.lastOpponentAction + 1) % configuration.signs\n",
+    "    else:\n",
+    "        return random.randrange(0, configuration.signs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[59.0, -59.0]]"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"copynext_opponent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "UXX1qs3Y3pq9"
+   },
+   "source": [
+    "### 7. Агент производит действие-1 к тому, что использовал оппонент на прошлом ходу"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {
+    "colab": {
+     "base_uri": "https://localhost:8080/"
+    },
+    "id": "befWCH_53rPC",
+    "outputId": "35098c09-da46-4534-c2b3-045f43cff4b3"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting copyprevious_opponent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile copyprevious_opponent.py\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "def copyprevious_opponent(observation, configuration):\n",
+    "    if observation.step > 0:\n",
+    "        return (observation.lastOpponentAction + 2) % configuration.signs\n",
+    "    else:\n",
+    "        return random.randrange(0, configuration.signs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[-96.0, 96.0]]"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"copyprevious_opponent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 8. Агент равновероятно играет то, что не выкинул противник на прошлом ходу"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting opposit_agent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile opposit_agent.py\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "def opposit_agent(observation, configuration):\n",
+    "    if observation.step > 0:\n",
+    "        if observation.lastOpponentAction == 0:\n",
+    "            return random.choice([1,2])\n",
+    "        elif observation.lastOpponentAction == 1:\n",
+    "            return random.choice([0,2])\n",
+    "        else:\n",
+    "            return random.choice([1,0])\n",
+    "    else:\n",
+    "        return random.randrange(0, configuration.signs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[0, 0]]"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"opposit_agent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "UMkYCrDl5KAA"
+   },
+   "source": [
+    "### 9. Агент выбрасывает три раза одно и то же, после чего меняет выбор на следующее случайное"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {
+    "id": "Tj5tEIw85UIN"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting random3_opponent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile random3_opponent.py\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "counter = 0\n",
+    "stable_sign = None\n",
+    "\n",
+    "def random3_opponent(observation, configuration):\n",
+    "    global counter\n",
+    "    global stable_sign\n",
+    "    if observation.step == 0:\n",
+    "        stable_sign = random.randrange(0, configuration.signs)\n",
+    "    elif counter % 3 == 2:\n",
+    "        stable_sign = random.randrange(0, configuration.signs)\n",
+    "    counter += 1\n",
+    "    return stable_sign"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[0, 0]]"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"random3_opponent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "nwSSgzoSzqCx"
+   },
+   "source": [
+    "### 10. Агент производит то же действие, если выиграл, и меняет на +1, если нет"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {
+    "id": "kzNKEiGr2WUu"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting win_reaction1.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile win_reaction1.py\n",
+    "\n",
+    "import math\n",
+    "\n",
+    "def get_score(left_move, right_move):\n",
+    "    delta = (\n",
+    "        right_move - left_move\n",
+    "        if (left_move + right_move) % 2 == 0\n",
+    "        else left_move - right_move\n",
+    "    )\n",
+    "    return 0 if delta == 0 else math.copysign(1, delta)\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "lastAction = None\n",
+    "\n",
+    "def win_reaction1(observation, configuration):\n",
+    "    global lastAction\n",
+    "    if observation.step == 0:\n",
+    "        lastAction = random.randrange(0, configuration.signs)\n",
+    "    elif get_score(lastAction, observation.lastOpponentAction) < 1:\n",
+    "        lastAction = (lastAction + 1) % configuration.signs\n",
+    "    return lastAction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[25.0, -25.0]]"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"win_reaction1.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "Ix0jfnmI4UKF"
+   },
+   "source": [
+    "### 11. Агент производит то же действие, если выиграл, и меняет на -1, если проиграл"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {
+    "id": "9z6JFjDV4XbM"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting win_reaction2.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile win_reaction2.py\n",
+    "\n",
+    "import math\n",
+    "\n",
+    "def get_score(left_move, right_move):\n",
+    "    delta = (\n",
+    "        right_move - left_move\n",
+    "        if (left_move + right_move) % 2 == 0\n",
+    "        else left_move - right_move\n",
+    "    )\n",
+    "    return 0 if delta == 0 else math.copysign(1, delta)\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "lastAction = None\n",
+    "\n",
+    "def win_reaction2(observation, configuration):\n",
+    "    global lastAction\n",
+    "    if observation.step == 0:\n",
+    "        lastAction = random.randrange(0, configuration.signs)\n",
+    "    elif get_score(lastAction, observation.lastOpponentAction) < 1:\n",
+    "        lastAction = (lastAction + 2) % configuration.signs\n",
+    "    return lastAction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[58.0, -58.0]]"
+      ]
+     },
+     "execution_count": 24,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"win_reaction2.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "VHfuloXJ4sQn"
+   },
+   "source": [
+    "### 12. Агент производит то же действие, если выиграл, и меняет на действие оппонента, если проиграл"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "id": "cOKkhxDs4-3G"
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting win_opposit1.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile win_opposit1.py\n",
+    "\n",
+    "import math\n",
+    "\n",
+    "def get_score(left_move, right_move):\n",
+    "    delta = (\n",
+    "        right_move - left_move\n",
+    "        if (left_move + right_move) % 2 == 0\n",
+    "        else left_move - right_move\n",
+    "    )\n",
+    "    return 0 if delta == 0 else math.copysign(1, delta)\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "lastAction = None\n",
+    "\n",
+    "def win_opposit1(observation, configuration):\n",
+    "    global lastAction\n",
+    "    if observation.step == 0:\n",
+    "        lastAction = random.randrange(0, configuration.signs)\n",
+    "    elif get_score(lastAction, observation.lastOpponentAction) < 1:\n",
+    "        lastAction = observation.lastOpponentAction\n",
+    "    return lastAction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[0, 0]]"
+      ]
+     },
+     "execution_count": 26,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"win_opposit1.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 13. Агент производит то же действие, если проиграл, и меняет на действие оппонента, если выиграл"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting win_opposit2.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile win_opposit2.py\n",
+    "\n",
+    "import math\n",
+    "\n",
+    "def get_score(left_move, right_move):\n",
+    "    delta = (\n",
+    "        right_move - left_move\n",
+    "        if (left_move + right_move) % 2 == 0\n",
+    "        else left_move - right_move\n",
+    "    )\n",
+    "    return 0 if delta == 0 else math.copysign(1, delta)\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "lastAction = None\n",
+    "\n",
+    "def win_opposit2(observation, configuration):\n",
+    "    global lastAction\n",
+    "    if observation.step == 0:\n",
+    "        lastAction = random.randrange(0, configuration.signs)\n",
+    "    elif get_score(lastAction, observation.lastOpponentAction) == 1:\n",
+    "        lastAction = observation.lastOpponentAction\n",
+    "    return lastAction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[-98.0, 98.0]]"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"win_opposit2.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "N7a0lWpc4-BT"
+   },
+   "source": [
+    "### 14. Агент производит то же действие, если выиграл, и меняет на рандомное, если проиграл"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting win_random1.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile win_random1.py\n",
+    "\n",
+    "import math\n",
+    "\n",
+    "def get_score(left_move, right_move):\n",
+    "    delta = (\n",
+    "        right_move - left_move\n",
+    "        if (left_move + right_move) % 2 == 0\n",
+    "        else left_move - right_move\n",
+    "    )\n",
+    "    return 0 if delta == 0 else math.copysign(1, delta)\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "lastAction = None\n",
+    "\n",
+    "def win_random1(observation, configuration):\n",
+    "    global lastAction\n",
+    "    if observation.step == 0 or get_score(lastAction, observation.lastOpponentAction) < 1:\n",
+    "        lastAction = random.randrange(0, configuration.signs)\n",
+    "    return lastAction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[31.0, -31.0]]"
+      ]
+     },
+     "execution_count": 30,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"win_random1.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "E6dchFDB5VrE"
+   },
+   "source": [
+    "### 15. Агент производит то же действие, если проиграл, и меняет на рандомное, если выиграл"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting win_random2.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile win_random2.py\n",
+    "\n",
+    "import math\n",
+    "\n",
+    "def get_score(left_move, right_move):\n",
+    "    delta = (\n",
+    "        right_move - left_move\n",
+    "        if (left_move + right_move) % 2 == 0\n",
+    "        else left_move - right_move\n",
+    "    )\n",
+    "    return 0 if delta == 0 else math.copysign(1, delta)\n",
+    "\n",
+    "import random\n",
+    "\n",
+    "lastAction = None\n",
+    "\n",
+    "def win_random2(observation, configuration):\n",
+    "    global lastAction\n",
+    "    if observation.step == 0 or get_score(lastAction, observation.lastOpponentAction) == 1:\n",
+    "        lastAction = random.randrange(0, configuration.signs)\n",
+    "    return lastAction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[-99.0, 99.0]]"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"win_random2.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 16. Агент играет по очереди камень, бумагу, ножницы"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Overwriting sequence_agent.py\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%writefile sequence_agent.py\n",
+    "\n",
+    "counter = -1\n",
+    "\n",
+    "def sequence(observation, configuration):\n",
+    "    global counter\n",
+    "    counter += 1\n",
+    "    if counter % 3 == 0:\n",
+    "        return 0\n",
+    "    elif counter % 3 == 1:\n",
+    "        return 1\n",
+    "    else:\n",
+    "        return 2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[0, 0]]"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "evaluate(\n",
+    "    \"rps\", #environment to use - no need to change\n",
+    "    [\"sequence_agent.py\", \"statistical\"], #agents to evaluate\n",
+    "    configuration={\"episodeSteps\": 100}, #number of episodes\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "id": "ExgIpXUVjbjN"
+   },
+   "source": [
+    "Воспользуемся функцией evaluate из библиотеки kaggle_environments с помощью которой запустим наших агентов и проведем эксперимент на заданном количестве игр"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Турнир\n",
+    "Составим список агентов, потом заставим их сыграть между собой по количеству times партий. \n",
+    "Получившуюся статистику побед запишем в словарь и выведем в виде таблицы pandas"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "agents = ['rock_agent.py',\n",
+    "          'paper_agent.py',\n",
+    "          'scissors_agent.py',\n",
+    "          'random_opponent.py',\n",
+    "          'copy_opponent.py',\n",
+    "          'copynext_opponent.py',\n",
+    "          'copyprevious_opponent.py',\n",
+    "          'opposit_agent.py', \n",
+    "          'random3_opponent.py', \n",
+    "          'win_reaction1.py', \n",
+    "          'win_reaction2.py', \n",
+    "          'win_opposit1.py', \n",
+    "          'win_opposit2.py', \n",
+    "          'win_random1.py', \n",
+    "          'win_random2.py', \n",
+    "          'sequence_agent.py']\n",
+    "\n",
+    "\n",
+    "rank = {agent: 0 for agent in agents}\n",
+    "\n",
+    "for times in range(3):\n",
+    "# сколько раундов сыграет каждая пара\n",
+    "          \n",
+    "    for i in range(len(agents)):\n",
+    "        for j in range(i+1, len(agents)):\n",
+    "            e = evaluate(\n",
+    "            \"rps\", #environment to use - no need to change\n",
+    "            [agents[i], agents[j]], #agents to evaluate\n",
+    "            configuration={\"episodeSteps\": 100, 'tieRewardThreshold': 1} #number of episodes \n",
+    "            )\n",
+    "            if e[0][0] > e[0][1]:\n",
+    "                rank[agents[i]] += 1\n",
+    "            elif e[0][0] < e[0][1]:\n",
+    "                rank[agents[j]] += 1\n",
+    "            \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# ИТОГОВЫЙ РЕЙТИНГ"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Рейтинг турнира по количеству выигранных партий</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>copynext_opponent.py</th>\n",
+       "      <td>33</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>win_reaction2.py</th>\n",
+       "      <td>31</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>win_reaction1.py</th>\n",
+       "      <td>29</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>opposit_agent.py</th>\n",
+       "      <td>28</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>win_random1.py</th>\n",
+       "      <td>26</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>copy_opponent.py</th>\n",
+       "      <td>20</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>random_opponent.py</th>\n",
+       "      <td>19</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>scissors_agent.py</th>\n",
+       "      <td>18</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>random3_opponent.py</th>\n",
+       "      <td>17</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>win_opposit1.py</th>\n",
+       "      <td>17</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>sequence_agent.py</th>\n",
+       "      <td>17</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>win_opposit2.py</th>\n",
+       "      <td>16</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>copyprevious_opponent.py</th>\n",
+       "      <td>13</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>rock_agent.py</th>\n",
+       "      <td>12</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>paper_agent.py</th>\n",
+       "      <td>11</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>win_random2.py</th>\n",
+       "      <td>8</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                          Рейтинг турнира по количеству выигранных партий\n",
+       "copynext_opponent.py                                                   33\n",
+       "win_reaction2.py                                                       31\n",
+       "win_reaction1.py                                                       29\n",
+       "opposit_agent.py                                                       28\n",
+       "win_random1.py                                                         26\n",
+       "copy_opponent.py                                                       20\n",
+       "random_opponent.py                                                     19\n",
+       "scissors_agent.py                                                      18\n",
+       "random3_opponent.py                                                    17\n",
+       "win_opposit1.py                                                        17\n",
+       "sequence_agent.py                                                      17\n",
+       "win_opposit2.py                                                        16\n",
+       "copyprevious_opponent.py                                               13\n",
+       "rock_agent.py                                                          12\n",
+       "paper_agent.py                                                         11\n",
+       "win_random2.py                                                          8"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "rank_se = pd.Series(rank, name=\"Рейтинг турнира по количеству выигранных партий\").sort_values(ascending=False).to_frame()\n",
+    "rank_se"
+   ]
+  }
+ ],
+ "metadata": {
+  "colab": {
+   "collapsed_sections": [],
+   "provenance": []
+  },
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.12"
+  },
+  "vscode": {
+   "interpreter": {
+    "hash": "f753dde58ddb99e3e3a8a3f6ff6bb163e9afd007b68b7c9487cb38bca28a3c09"
+   }
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 1
+}
