@@ -1,0 +1,30 @@
+!pip install -q -U kaggle_environments
+import numpy as np
+import pandas as pd
+import random
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from kaggle_environments import make, evaluate
+
+%%writefile rock_agent.py
+
+#0 - rock
+#1 - paper
+#2 - scissors
+def rock_agent(observation, configuration):
+    return 0
+   
+   
+evaluate(
+    "rps", #environment to use - no need to change
+    ["rock_agent.py", "statistical"], #agents to evaluate
+    configuration={"episodeSteps": 100}, #number of episodes
+)
+
+%%writefile paper_agent.py
+
+def paper_agent(observation, configuration):
+    return 1
+    
